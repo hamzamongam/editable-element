@@ -18,14 +18,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hamzamongam/hio-table.git"
+    "url": "git+https://github.com/hamzamongam/editable-element.git"
   },
   "author": "hamzamongam",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/hamzamongam/hio-table/issues"
+    "url": "https://github.com/hamzamongam/editable-element/issues"
   },
-  "homepage": "https://github.com/hamzamongam/hio-table#readme",
+  "homepage": "https://github.com/hamzamongam/editable-element#readme",
   "devDependencies": {
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^24.0.1",

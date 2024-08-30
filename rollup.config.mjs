@@ -14,13 +14,13 @@ export default [
   input: 'src/index.ts',
   output: [
    {
-    file: 'dist/editable-el.js',
-    format: 'iife',
+    file: 'dist/umd/editable-element.min.js',
+    format: 'umd',
     sourcemap: false,
     name: 'EditableElement',
    },
    {
-    file: 'dist/editable-el-esm.js',
+    file: 'dist/esm/editable-element.js',
     format: 'esm',
     sourcemap: false,
    },
@@ -41,7 +41,7 @@ export default [
   //   external: ['react', 'react-dom', 'process'],
  },
  {
-  input: 'dist/types/index.d.ts',
+  input: 'dist/esm/types/index.d.ts',
   output: [{ file: 'dist/index.d.ts', format: 'esm' }],
   external: [/\.css$/, /\.scss$/],
   plugins: [

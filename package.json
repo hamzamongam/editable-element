@@ -2,8 +2,8 @@
   "name": "editable-element",
   "version": "1.0.1",
   "description": "",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
+  "main": "dist/umd/editable-element.min.js",
+  "module": "dist/esm/editable-element.js",
   "type": "module",
   "files": [
     "dist"

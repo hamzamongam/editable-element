@@ -8,42 +8,101 @@ export class Toolbar implements IToolbarConfig {
 
  constructor() {
   this.toolbarElement = this.createToolbar()
+  document.addEventListener('mouseup', this.handleMouseUp.bind(this))
+ }
+
+ private handleMouseUp(event: MouseEvent): void {
+  const selection = window.getSelection()
+  if (
+   selection &&
+   selection.rangeCount > 0 &&
+   selection.toString().length > 0
+  ) {
+   const range = selection.getRangeAt(0)
+   const rect = range.getBoundingClientRect()
+   this.toolbarElement.style.top = `${
+    rect.top + window.scrollY - this.toolbarElement.offsetHeight - 5
+   }px`
+   this.toolbarElement.style.left = `${rect.left + window.scrollX}px`
+   this.toolbarElement.style.display = 'inline-flex'
+  } else {
+   this.toolbarElement.style.display = 'none'
+  }
  }
 
  private createToolbar(): HTMLDivElement {
-  const toolbar = createElement<HTMLDivElement>('div', {
-   className: 'editable-toolbar',
-   id: 'editable-toolbar',
-  })
-  toolbar.innerHTML = `
-         <ul>
-           <li>
-             ${this.createFontSelectors()}
-           </li>
-           <li>
-             ${this.createTextFormattingButtons()}
-           </li>
-           <li>
-             ${this.createAlignmentButtons()}
-           </li>
-         </ul>`
+  // Create the toolbar container
+  const toolbar = document.createElement('div')
+  toolbar.className = 'editable-toolbar'
+  toolbar.id = 'editable-toolbar'
+
+  // Create the unordered list element
+  const ul = document.createElement('ul')
+
+  // Create and append font selectors
+  const fontSelectorLi = document.createElement('li')
+  fontSelectorLi.appendChild(this.createFontSelectors())
+  ul.appendChild(fontSelectorLi)
+
+  // Create and append text formatting buttons
+  const textFormattingLi = document.createElement('li')
+  textFormattingLi.innerHTML = this.createTextFormattingButtons()
+  ul.appendChild(textFormattingLi)
+
+  // Create and append alignment buttons
+  const alignmentLi = document.createElement('li')
+  alignmentLi.innerHTML = this.createAlignmentButtons()
+  ul.appendChild(alignmentLi)
+
+  // Append the list to the toolbar container
+  toolbar.appendChild(ul)
+
+  return toolbar
   return toolbar
  }
 
- private createFontSelectors(): string {
+ private createFontSelectors(): HTMLDivElement {
   const fonts = ['Courier New', 'Arial']
   const fontSizes = [10, 12, 14, 16, 18, 20, 24, 30]
-  return `
-      <select>
-        ${fonts
-         .map((font) => `<option style="font-family: ${font}">${font}</option>`)
-         .join('')}
-      </select>
-      <select id="change-font-size">
-        ${fontSizes
-         .map((size) => `<option value="${size}px">${size}px</option>`)
-         .join('')}
-      </select>`
+
+  const fontSelect = this.createSelectElement(fonts, 'font-family')
+  const sizeSelect = this.createSelectElement(fontSizes)
+
+  const container = document.createElement('div')
+  container.appendChild(fontSelect)
+  container.appendChild(sizeSelect)
+
+  fontSelect.addEventListener('change', this.handleFontChange)
+  sizeSelect.addEventListener('change', this.handleSizeChange)
+
+  return container
+ }
+
+ private createSelectElement(
+  options: (string | number)[],
+  styleProp?: string,
+ ): HTMLSelectElement {
+  const select = document.createElement('select')
+  options.forEach((option) => {
+   const optionElement = document.createElement('option')
+   if (styleProp === 'font-family') {
+    optionElement.style.fontFamily = option as string
+   }
+   optionElement.value = `${option}`
+   optionElement.textContent = `${option}`
+   select.appendChild(optionElement)
+  })
+  return select
+ }
+
+ private handleFontChange(event: Event): void {
+  const selectedFont = (event.target as HTMLSelectElement).value
+  console.log(`Font changed to: ${selectedFont}`)
+ }
+
+ private handleSizeChange(event: Event): void {
+  const selectedSize = (event.target as HTMLSelectElement).value
+  console.log(`Font size changed to: ${selectedSize}`)
  }
 
  private createTextFormattingButtons(): string {
@@ -56,12 +115,11 @@ export class Toolbar implements IToolbarConfig {
   return buttons
    .map(
     (button) => `
-      <button onclick="document.execCommand('${button.cmd}', false, '');" ${
+        <button onclick="document.execCommand('${button.cmd}', false, '');" ${
      button.style ? `style="${button.style}"` : ''
     }>
-        ${button.label}
-      </button>
-    `,
+          ${button.label}
+        </button>`,
    )
    .join('')
  }
@@ -77,10 +135,9 @@ export class Toolbar implements IToolbarConfig {
   return buttons
    .map(
     (button) => `
-      <button class="align-el ${button.className}" onclick="document.execCommand('${button.cmd}', false, '');">
-        <span></span><span></span><span></span><span></span>
-      </button>
-    `,
+        <button class="align-el ${button.className}" onclick="document.execCommand('${button.cmd}', false, '');">
+          <span></span><span></span><span></span><span></span>
+        </button>`,
    )
    .join('')
  }
@@ -90,7 +147,6 @@ export class Toolbar implements IToolbarConfig {
  }
 
  public createButtons(): HTMLButtonElement[] {
-  // Implement this method to allow button creation
-  return []
+  return [] // Implement this method to allow button creation
  }
 }

@@ -7,7 +7,6 @@ import postcss from 'rollup-plugin-postcss'
 import dts from 'rollup-plugin-dts'
 import replace from '@rollup/plugin-replace'
 import terser from '@rollup/plugin-terser'
-import url from '@rollup/plugin-url'
 
 export default [
  {
@@ -16,13 +15,19 @@ export default [
    {
     file: 'dist/umd/editable-element.min.js',
     format: 'umd',
-    sourcemap: false,
+    sourcemap: true,
     name: 'EditableElement',
+    plugin: [],
    },
    {
     file: 'dist/esm/editable-element.js',
     format: 'esm',
-    sourcemap: false,
+    sourcemap: true,
+   },
+   {
+    file: 'dist/cjs/editable-element.js',
+    format: 'cjs',
+    sourcemap: true,
    },
   ],
   plugins: [
@@ -44,12 +49,6 @@ export default [
   input: 'dist/esm/types/index.d.ts',
   output: [{ file: 'dist/index.d.ts', format: 'esm' }],
   external: [/\.css$/, /\.scss$/],
-  plugins: [
-   dts(),
-   url({
-    include: ['**/*.png', '**/*.jpg', '**/*.gif', '**/*.svg'],
-    destDir: 'dist/images',
-   }),
-  ],
+  plugins: [dts()],
  },
 ]

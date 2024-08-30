@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="/dist/style.css" />
+ </head>
+ <body>
+
+
+  <h1 data-editable="title">This is Title</h1>
+
+  <div data-editable="content">
+   <h1>Hello Workld</h1>
+   <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nesciunt, magnam. Porro, modi. Alias, autem! Placeat at magnam dicta porro illo enim quia eaque quibusdam suscipit. Necessitatibus molestias aperiam, repellendus distinctio doloremque cupiditate facilis velit iste et asperiores sequi ipsum obcaecati quaerat quam. Atque itaque repudiandae corporis harum blanditiis ratione perspiciatis quos ad! Facilis voluptas illo assumenda aut aspernatur? Similique consequatur veniam accusamus ducimus ex. Cupiditate minus aliquam ipsum iure optio.</p>
+  </div>
+
+ 
+
+  <script src="/dist/editable-el.js"></script>
+  <script>
+   new EditableElement.EditableElement({
+    onClickSave:(e)=>console.log(e)
+   })
+   document
+    .getElementById('change-font-size')
+    .addEventListener('change', function () {
+     applyFontSize(this.value)
+    })
+
+   function applyFontSize(size) {
+    const selection = window.getSelection()
+    if (selection.rangeCount > 0) {
+     const range = selection.getRangeAt(0)
+     const selectedNode = range.startContainer.parentNode
+     console.log({ size, selectedNode })
+     if (selectedNode) {
+      selectedNode.style.fontSize = size
+ 
+    }
+   }
+  }
+   // Show toolbar when selecting text in editable content
+   document.addEventListener('mouseup', function (event) {
+    const selection = window.getSelection()
+    const toolbar = document.getElementById('editable-toolbar')
+    if (selection.rangeCount > 0 && selection.toString().length > 0) {
+     const range = selection.getRangeAt(0)
+     const rect = range.getBoundingClientRect()
+     toolbar.style.top =
+      rect.top + window.scrollY - toolbar.offsetHeight - 5 + 'px'
+     toolbar.style.left = rect.left + window.scrollX + 'px'
+     toolbar.style.display = 'inline-flex'
+    } else {
+     toolbar.style.display = 'none'
+    }
+   })
+  </script>
+ </body>
+</html>

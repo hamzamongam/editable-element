@@ -1,12 +1,12 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
 import external from 'rollup-plugin-peer-deps-external'
 import postcss from 'rollup-plugin-postcss'
 import dts from 'rollup-plugin-dts'
-import replace from '@rollup/plugin-replace'
 import terser from '@rollup/plugin-terser'
+import autoprefixer from 'autoprefixer'
+import path from 'path'
 
 export default [
  {
@@ -14,10 +14,9 @@ export default [
   output: [
    {
     file: 'dist/umd/editable-element.min.js',
-    format: 'umd',
+    format: 'iife',
     sourcemap: true,
     name: 'EditableElement',
-    plugin: [],
    },
    {
     file: 'dist/esm/editable-element.js',
@@ -31,19 +30,21 @@ export default [
    },
   ],
   plugins: [
-   //    eslint({ fix: true }),
    external(),
    nodeResolve({ browser: true }),
    commonjs(),
-   replace({
-    preventAssignment: true,
-    'process.env.NODE_ENV': JSON.stringify('production'),
-   }),
    typescript({ tsconfig: './tsconfig.json' }),
-   postcss({ extract: 'style.css' }),
+   postcss({
+    extract: 'style.css', // Outputs CSS to the dist folder
+    minimize: true,
+    sourceMap: true,
+    plugins: [autoprefixer()],
+    use: [
+     ['sass', { includePaths: ['./src/styles'] }], // SCSS configuration
+    ],
+   }),
    terser({ compress: true }),
   ],
-  //   external: ['react', 'react-dom', 'process'],
  },
  {
   input: 'dist/esm/types/index.d.ts',

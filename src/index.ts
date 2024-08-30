@@ -1,6 +1,7 @@
 import { EditableSectionManager } from './EditableSectionManager'
 import { Header } from './Header'
 import { Toolbar } from './Toolbar'
+import './style.scss'
 
 type EditableElementOption = {
  onClickSave?: (val?: any) => void

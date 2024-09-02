@@ -1,34 +1,34 @@
 // elementUtils.ts
 
 type ElementOptions = {
- className?: string // Renamed `class` to `className` to avoid reserved keyword issues
- id?: string
+  className?: string // Renamed `class` to `className` to avoid reserved keyword issues
+  id?: string
 }
 
 export function createElement<T extends HTMLElement>(
- tag: string,
- options?: ElementOptions,
+  tag: keyof HTMLElementTagNameMap,
+  options?: ElementOptions,
 ): T {
- const element = document.createElement(tag) as T
+  const element = document.createElement(tag) as T
 
- if (options) {
-  if (options.className) {
-   element.classList.add(options.className)
+  if (options) {
+    if (options.className) {
+      element.classList.add(options.className)
+    }
+    if (options.id) {
+      element.id = options.id
+    }
   }
-  if (options.id) {
-   element.id = options.id
-  }
- }
 
- return element
+  return element
 }
 
 export function createButton(
- className: string,
- innerHTML: string,
+  className: string,
+  innerHTML: string,
 ): HTMLButtonElement {
- const button = document.createElement('button') as HTMLButtonElement
- button.classList.add(className)
- button.innerHTML = innerHTML
- return button
+  const button = document.createElement('button') as HTMLButtonElement
+  button.classList.add(className)
+  button.innerHTML = innerHTML
+  return button
 }

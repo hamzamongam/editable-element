@@ -25,12 +25,23 @@ npm install editable-element
 
 ## Usage/Examples
 
+```html
+<div data-editable="any_name"> </div>
+```
+
 ```javascript
 import EditableElement from 'editable-element';
 
 const editable = new EditableElement({s
-  onChange: (data) => {
+  onClickSave: (data) => {
     console.log('Content changed:', data);
   }
 });
+```
+
+
+### browser
+
+```html
+<div data-editable="any_name"> </div>
 ```

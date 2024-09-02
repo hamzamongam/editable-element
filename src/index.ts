@@ -1,12 +1,12 @@
 import { EditableSectionManager } from './EditableSectionManager'
 import { Header } from './Header'
-import { Toolbar } from './Toolbar'
 import './style.scss'
+import { Toolbar } from './toolbar/Toobar'
 
 type EditableElementOption = {
   onClickSave?: (val?: any) => void
-  onClickPublish?: () => void
-  onClickPreview?: () => void
+  onClickPublish?: (val?: any) => void
+  onClickPreview?: (val?: any) => void
 }
 
 export class EditableElement {
@@ -20,8 +20,9 @@ export class EditableElement {
     this.header = new Header({
       onClickSave: () => {
         const values = this.sectionManager.getEditableValue()
-        console.log({ values })
-        // options.onClickSave?.(values)
+        options.onClickSave?.(values)
+        options.onClickPublish?.(values)
+        options.onClickPreview?.(values)
       },
     })
     this.toolbar = new Toolbar()

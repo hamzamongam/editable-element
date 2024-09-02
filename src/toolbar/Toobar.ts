@@ -1,22 +1,56 @@
-import { createElement } from '../elementUtils'
+import { ElementProvider } from '../type'
+import { mergeElements } from '../utils'
+import { AlignSelector } from './AlignSelector'
+import { ColorSelector } from './ColorSelector'
+import { FontSelector } from './FontSelector'
+import { SizeSelector } from './SizeSelector'
+import { TextFormatSelector } from './TextFormatSelector'
 
-class Toolbar {
+export class Toolbar implements ElementProvider {
   private toolbarElement: HTMLDivElement
 
   constructor() {
-    this.toolbarElement = createElement('div', { className: '' })
+    this.toolbarElement = mergeElements([
+      [new FontSelector(), new SizeSelector(), new ColorSelector()],
+      [new TextFormatSelector()],
+      [new AlignSelector()],
+    ])
+    document.addEventListener('mouseup', this.handleMouseUp.bind(this))
   }
-}
 
-const t = new Toolbar()
+  public getElement(): HTMLDivElement {
+    return this.toolbarElement
+  }
 
-const data = [1, 2, 3, 4, 5, 6, 7]
+  private handleMouseUp(): void {
+    const selection = window.getSelection()
+    if (
+      selection &&
+      selection.rangeCount > 0 &&
+      selection.toString().trim().length > 0 // Ensure at least 1 visible character is selected
+    ) {
+      const range = selection.getRangeAt(0)
+      const rect = range.getBoundingClientRect()
 
-const cret = () => {
-  const el: HTMLElement[] = []
-  data.forEach((v) => {
-    const liElement = createElement('li')
-    liElement.textContent = `${v}`
-    el.push(liElement)
-  })
+      // Calculate the initial top and left positions for the toolbar
+      const top =
+        rect.top + window.scrollY - this.toolbarElement.offsetHeight - 5
+      let left = rect.left + window.scrollX
+
+      // Check if the toolbar would overflow the right edge of the window
+      const toolbarWidth = 460
+      const viewportWidth = window.innerWidth
+      if (left + toolbarWidth > viewportWidth) {
+        // Adjust the left position to ensure the toolbar stays within the viewport
+        left = viewportWidth - toolbarWidth - 10 // 10px padding from the edge
+      }
+
+      // Position the toolbar
+      this.toolbarElement.style.top = `${top + rect.height + 20}px`
+      this.toolbarElement.style.left = `${left}px`
+      this.toolbarElement.style.display = 'inline-flex'
+    } else {
+      this.toolbarElement.style.display = 'none'
+    }
+  }
 }

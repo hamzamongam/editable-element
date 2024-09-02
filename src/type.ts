@@ -1,10 +1,10 @@
 export interface IToolbarConfig {
- createButtons(): HTMLButtonElement[]
+  createButtons(): HTMLButtonElement[]
 }
 
 export interface IButtonConfig {
- className: string
- label: string
- icon?: string
- onClick: () => void
+  className: string
+  label: string
+  icon?: string
+  onClick: () => void
 }

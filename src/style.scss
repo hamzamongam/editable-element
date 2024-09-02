@@ -104,7 +104,7 @@ table {
     display: none;
     align-items: center;
     // width: 500px;
-
+position: absolute;
     border-radius: 10px;
 background: #FBFCFD;
 box-shadow: 0px 0px 23px -3px rgba(0, 0, 0, 0.20);
@@ -128,6 +128,24 @@ ul{
             border-right: 1px solid #858585;
             padding-right: 12px;
             margin-right: 12px;
+        }
+        input[type='color']{
+            width: 20px;
+            height: 20px;
+           
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            &::-webkit-color-swatch{
+                padding: 0;
+                outline: none;
+                border-radius: 5px;
+                border: none;
+              }
+            
         }
         button{
             // padding: 4px;

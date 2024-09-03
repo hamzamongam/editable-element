@@ -42,10 +42,10 @@ Include the JavaScript file and initialize the EditableElement:
  <script src="https://unpkg.com/editable-element/dist/umd/editable-element.min.js"></script>
  <script>
    new EditableElement.EditableElement({
-    onClickSave:(e)=>console.log(e),
-    onClickPublish:(e)=>console.log(e),
-    onClickPreview:(e)=>console.log(e),
-    onClickBack:(e)=>console.log('Clicked Back'),
+    onClickSave:(values)=>console.log(values),
+    onClickPublish:(values)=>console.log(values),
+    onClickPreview:(values)=>console.log(values),
+    onClickBack:()=>console.log('Clicked Back'),
    })
  </script>
 ```

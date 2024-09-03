@@ -7,6 +7,7 @@ type EditableElementOption = {
   onClickSave?: (val?: any) => void
   onClickPublish?: (val?: any) => void
   onClickPreview?: (val?: any) => void
+  onClickBack?: () => void
 }
 
 export class EditableElement {
@@ -23,6 +24,17 @@ export class EditableElement {
         options.onClickSave?.(values)
         options.onClickPublish?.(values)
         options.onClickPreview?.(values)
+      },
+      onClickPreview: () => {
+        const values = this.sectionManager.getEditableValue()
+        options.onClickPreview?.(values)
+      },
+      onClickPublish: () => {
+        const values = this.sectionManager.getEditableValue()
+        options.onClickPublish?.(values)
+      },
+      onClickBack: () => {
+        options.onClickBack?.()
       },
     })
     this.toolbar = new Toolbar()

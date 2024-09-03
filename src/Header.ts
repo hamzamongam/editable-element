@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { ButtonFactory } from './ButtonFactory'
 import { createElement } from './elementUtils'
-import { arrowIcon, previewIcon } from './icons'
+import { arrowIcon, previewIcon, publishIcon, saveIcon } from './icons'
 import { IButtonConfig } from './type'
 
 // Type for Header options
@@ -9,6 +9,7 @@ type HeaderOptions = {
   onClickSave?: () => void
   onClickPublish?: () => void
   onClickPreview?: () => void
+  onClickBack?: () => void
 }
 
 // Header class with improved default handling and code cleanup
@@ -21,11 +22,14 @@ export class Header {
 
   private onClickPreview?: HeaderOptions['onClickPreview']
 
+  private onClickBack?: HeaderOptions['onClickBack']
+
   constructor(options: HeaderOptions = {}) {
     this.mainHeader = this.createMainHeader()
     this.onClickSave = options.onClickSave
     this.onClickPublish = options.onClickPublish
     this.onClickPreview = options.onClickPreview
+    this.onClickBack = options.onClickBack
   }
 
   private createMainHeader(): HTMLDivElement {
@@ -35,21 +39,21 @@ export class Header {
     const mainHeaderLeft = createElement('div')
     const mainHeaderRight = createElement('div')
 
-    const headerBack = ButtonFactory.createButton({
-      className: 'e--button',
-      label: '',
-      icon: arrowIcon,
-      onClick: () => this.handleBackClick(),
-    })
+    // const headerBack = ButtonFactory.createButton({
+    //   className: 'e--button',
+    //   label: '',
+    //   icon: arrowIcon,
+    //   onClick: () => this.handleBackClick(),
+    // })
 
     const editMetaData = ButtonFactory.createButton({
+      preFixIcon: arrowIcon,
       className: 'e--button',
       label: 'edit Metadata',
       onClick: () => this.handleEditMetaDataClick(),
     })
 
-    mainHeaderLeft.append(headerBack, editMetaData)
-    const buttonsElement = this.createActionButtons()
+    mainHeaderLeft.append(editMetaData)
     mainHeaderRight.append(...this.createActionButtons())
 
     mainHeader.append(mainHeaderLeft, mainHeaderRight)
@@ -67,13 +71,13 @@ export class Header {
       {
         className: 'e--button-right',
         label: 'Save',
-        icon: previewIcon,
+        icon: saveIcon,
         onClick: () => this.handleSaveClick(),
       },
       {
         className: 'e--button-right',
         label: 'Publish',
-        icon: previewIcon,
+        icon: publishIcon,
         onClick: () => this.handlePublishClick(),
       },
     ]
@@ -84,12 +88,10 @@ export class Header {
     return this.mainHeader
   }
 
-  private handleBackClick() {
-    console.log('Back button clicked')
-  }
-
-  private handleEditMetaDataClick() {
-    console.log('Edit Metadata button clicked')
+  private handleEditMetaDataClick(): void {
+    if (this.onClickBack) {
+      this.onClickBack()
+    }
   }
 
   private handlePreviewClick(): void {
@@ -104,7 +106,7 @@ export class Header {
     }
   }
 
-  private handlePublishClick() {
+  private handlePublishClick(): void {
     if (this.onClickPublish) {
       this.onClickPublish()
     }

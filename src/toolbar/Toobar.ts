@@ -33,8 +33,7 @@ export class Toolbar implements ElementProvider {
       const rect = range.getBoundingClientRect()
 
       // Calculate the initial top and left positions for the toolbar
-      const top =
-        rect.top + window.scrollY - this.toolbarElement.offsetHeight - 5
+      const top = rect.top + window.scrollY - 5
       let left = rect.left + window.scrollX
 
       // Check if the toolbar would overflow the right edge of the window

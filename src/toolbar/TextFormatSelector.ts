@@ -1,23 +1,52 @@
 import { ElementProvider } from '../type'
 import { createElement } from '../elementUtils'
 
-const createTextFormattingButtons = (): string => {
+function createTextFormattingButtons(): HTMLDivElement {
+  // Define the button configurations
   const buttons = [
     { cmd: 'bold', label: 'B' },
-    { cmd: 'italic', label: '/' },
-    { cmd: 'underline', label: 'U', style: 'text-decoration: underline' },
+    { cmd: 'italic', label: 'I' },
+    { cmd: 'underline', label: 'U', style: 'text-decoration: underline;' },
   ]
 
-  return buttons
-    .map(
-      (button) => `
-      <button onclick="document.execCommand('${button.cmd}', false, '');" ${
-        button.style ? `style="${button.style}"` : ''
-      }>
-        ${button.label}
-      </button>`,
-    )
-    .join('')
+  // Create a container for the buttons
+  const container = document.createElement('div') as HTMLDivElement
+
+  // Optional: Add a class to the container for styling purposes
+  container.className = 'text-formatting-buttons'
+
+  // Iterate over each button configuration
+  buttons.forEach((button) => {
+    // Create a button element
+    const btn = document.createElement('button')
+
+    // Set the button's text content
+    btn.textContent = button.label
+
+    // Apply styles if any are provided
+    if (button.style) {
+      btn.style.cssText = button.style
+    }
+
+    // Set additional attributes for accessibility (optional)
+    btn.setAttribute('type', 'button')
+    btn.setAttribute('aria-label', button.cmd)
+
+    // Attach the click event listener to execute the formatting command
+    btn.addEventListener('click', () => {
+      const selection = window.getSelection()
+      if (selection && selection.rangeCount > 0) {
+        document.execCommand(button.cmd, false, '')
+        selection.removeAllRanges()
+      }
+    })
+
+    // Append the button to the container
+    container.appendChild(btn)
+  })
+
+  // Return the container with all the buttons
+  return container
 }
 
 export class TextFormatSelector implements ElementProvider {
@@ -25,7 +54,7 @@ export class TextFormatSelector implements ElementProvider {
 
   constructor() {
     this.element = createElement('div')
-    this.element.innerHTML = createTextFormattingButtons()
+    this.element = createTextFormattingButtons()
   }
 
   public getElement(): HTMLDivElement {

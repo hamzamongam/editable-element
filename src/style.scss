@@ -1,4 +1,7 @@
 /* Reset CSS */
+
+$primaryColor: #f5cd47;
+
 *,
 *::before,
 *::after {
@@ -72,7 +75,7 @@ table {
   padding: 0px 16px;
   height: 40px;
   width: 100%;
-  background-color: #f5cd47;
+  background-color: $primaryColor;
 
   column-gap: 7px;
   justify-content: space-between;
@@ -116,7 +119,7 @@ table {
   align-items: center;
   // width: 500px;
   position: absolute;
-  border-radius: 10px;
+  border-radius: 7px;
   background: #fbfcfd;
   box-shadow: 0px 0px 23px -3px rgba(0, 0, 0, 0.2);
   padding: 10px 16px;
@@ -213,6 +216,43 @@ table {
     }
     &.align-right {
       align-items: end;
+    }
+  }
+}
+
+.text-formatting-buttons{
+  display: flex;
+  column-gap: 4px;
+}
+
+.image-upload-container{
+  // position: relative;
+  &:hover{
+    .ee-image-wrapper{
+      // opacity: 1;
+    }
+  }
+  .ee-image-wrapper{
+    transition: all;
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    z-index: 200;
+    // opacity: 0;
+    
+    input[type=file]{
+      display: none;
+    }
+    button{
+      cursor: pointer;
+      width: 30px;
+      background-color: $primaryColor;
+      height: 30px;
+      border-radius: 4px;
+      box-shadow: 1px 1px 4px #0005;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 }

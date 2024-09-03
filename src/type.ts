@@ -3,6 +3,7 @@ export interface IToolbarConfig {
 }
 
 export interface IButtonConfig {
+  preFixIcon?: string
   className: string
   label: string
   icon?: string
@@ -13,8 +14,7 @@ export interface ElementProvider {
   getElement(): HTMLElement
 }
 
-
 export interface OptionType {
-  value?:any
-  label?:string
+  value?: any
+  label?: string
 }

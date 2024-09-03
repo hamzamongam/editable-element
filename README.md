@@ -32,14 +32,14 @@ The current version  is **v${nextRelease.version}**.
 Include the necessary CSS file in your HTML:
 
 ```html
- <link rel="stylesheet" href="https://unpkg.com/editable-element@1.1.1/dist/umd/style.css">s
+ <link rel="stylesheet" href="https://unpkg.com/editable-element/dist/umd/style.css">
 ```
 
 #### Add JS file 
 Include the JavaScript file and initialize the EditableElement:
 
 ```html
- <script src="https://unpkg.com/editable-element@1.1.1/dist/umd/editable-element.min.js"></script>
+ <script src="https://unpkg.com/editable-element/dist/umd/editable-element.min.js"></script>
  <script>
    new EditableElement.EditableElement({
     onClickSave:(e)=>console.log(e),

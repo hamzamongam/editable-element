@@ -3,8 +3,15 @@
 import { createElement } from './elementUtils'
 import { uploadIcon } from './icons'
 
+type TUploadedFile = {
+  name: string
+  file: File
+}
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export class EditableSectionManager {
+  private uploadedFiles: TUploadedFile[] = []
+
   public initializeEditableSections(): void {
     const editSections: NodeListOf<HTMLElement> =
       document.querySelectorAll('[data-editable]')
@@ -38,6 +45,7 @@ export class EditableSectionManager {
           file.addEventListener('change', (event) => {
             const { files } = event.target as HTMLInputElement
             if (files && files.length > 0) {
+              const file = files?.[0]
               const reader = new FileReader()
               reader.onload = () => {
                 const img = section.querySelector('img')
@@ -45,7 +53,9 @@ export class EditableSectionManager {
                   img.src = `${reader.result}`
                 }
               }
-              reader.readAsDataURL(files?.[0])
+              reader.readAsDataURL(file)
+              const name = `${section.getAttribute('data-editable')}`
+              this.updateFile(name, file)
             }
           })
 
@@ -66,15 +76,40 @@ export class EditableSectionManager {
     }
   }
 
-  public getEditableValue(): { [key: string]: string } {
+  private updateFile(name: string, newFile: File): void {
+    // Find the index of the existing file with the same name
+    const index = this.uploadedFiles.findIndex((file) => file.name === name)
+
+    if (index !== -1) {
+      // Replace the existing file with the new one
+      this.uploadedFiles[index] = { name, file: newFile }
+    } else {
+      // If the file does not exist, add it as a new entry
+      this.uploadedFiles.push({ name, file: newFile })
+    }
+  }
+
+  private findUploadFile(fileName: string): TUploadedFile | undefined {
+    return this.uploadedFiles.find((file) => file.name === fileName)
+  }
+
+  public getEditableValue(): { [key: string]: string | File } {
     const editSections: NodeListOf<HTMLElement> =
       document.querySelectorAll('[data-editable]')
-    const content: { [key: string]: string } = {}
+    const content: { [key: string]: string | File } = {}
 
     editSections.forEach((section) => {
       const key = section.getAttribute('data-editable')
+      const IsImage = section.getAttribute('data-editable-type') === 'image'
       if (key) {
-        content[key] = section.innerHTML || ''
+        if (IsImage) {
+          const file = this.findUploadFile(key)
+          if (this.uploadedFiles.length > 0 && file) {
+            content[key] = file.file
+          }
+        } else {
+          content[key] = section.innerHTML || ''
+        }
       }
     })
 

@@ -22,8 +22,6 @@ export class EditableElement {
       onClickSave: () => {
         const values = this.sectionManager.getEditableValue()
         options.onClickSave?.(values)
-        options.onClickPublish?.(values)
-        options.onClickPreview?.(values)
       },
       onClickPreview: () => {
         const values = this.sectionManager.getEditableValue()

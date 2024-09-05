@@ -1,3 +1,10 @@
+## [1.1.4](https://github.com/hamzamongam/editable-element/compare/v1.1.3...v1.1.4) (2024-09-03)
+
+
+### Bug Fixes
+
+* bug fixes ([7d7baf6](https://github.com/hamzamongam/editable-element/commit/7d7baf60700a660f26071d657ceb3fdbd3c6619b))
+
 ## [1.1.3](https://github.com/hamzamongam/editable-element/compare/v1.1.2...v1.1.3) (2024-09-03)
 
 

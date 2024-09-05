@@ -15,7 +15,8 @@ export class Toolbar implements ElementProvider {
       [new TextFormatSelector()],
       [new AlignSelector()],
     ])
-    document.addEventListener('mouseup', this.handleMouseUp.bind(this))
+
+    this.handleMouseUp()
   }
 
   public getElement(): HTMLDivElement {
@@ -23,33 +24,51 @@ export class Toolbar implements ElementProvider {
   }
 
   private handleMouseUp(): void {
+    const editSections: NodeListOf<HTMLElement> =
+      document.querySelectorAll('[data-editable]')
+
+    editSections.forEach((element) => {
+      // Ensure event listeners are not duplicated
+      element.removeEventListener('mouseup', this.mouseUpHandler)
+      element.addEventListener('mouseup', this.mouseUpHandler.bind(this))
+    })
+  }
+
+  private mouseUpHandler(event: MouseEvent): void {
     const selection = window.getSelection()
+
     if (
       selection &&
-      selection.rangeCount > 0 &&
+      selection?.rangeCount > 0 &&
       selection.toString().trim().length > 0 // Ensure at least 1 visible character is selected
     ) {
       const range = selection.getRangeAt(0)
-      const rect = range.getBoundingClientRect()
+      const targetElement = event.currentTarget as HTMLElement
 
-      // Calculate the initial top and left positions for the toolbar
-      const top = rect.top + window.scrollY - 5
-      let left = rect.left + window.scrollX
+      if (targetElement.contains(range.commonAncestorContainer)) {
+        const rect = range.getBoundingClientRect()
 
-      // Check if the toolbar would overflow the right edge of the window
-      const toolbarWidth = 460
-      const viewportWidth = window.innerWidth
-      if (left + toolbarWidth > viewportWidth) {
-        // Adjust the left position to ensure the toolbar stays within the viewport
-        left = viewportWidth - toolbarWidth - 10 // 10px padding from the edge
+        // Calculate toolbar position
+        const top = rect.top + window.scrollY - 5
+        let left = rect.left + window.scrollX
+
+        // Toolbar overflow handling for right edge
+        const toolbarWidth = 460
+        const viewportWidth = window.innerWidth
+
+        if (left + toolbarWidth > viewportWidth) {
+          left = viewportWidth - toolbarWidth - 10 // Ensure toolbar doesn't overflow the viewport
+        }
+
+        // Position the toolbar
+        this.toolbarElement.style.top = `${top + rect.height + 20}px`
+        this.toolbarElement.style.left = `${left}px`
+        this.toolbarElement.style.display = 'inline-flex'
+      } else {
+        this.toolbarElement.style.display = 'none'
       }
-
-      // Position the toolbar
-      this.toolbarElement.style.top = `${top + rect.height + 20}px`
-      this.toolbarElement.style.left = `${left}px`
-      this.toolbarElement.style.display = 'inline-flex'
     } else {
-      this.toolbarElement.style.display = 'none'
+      this.toolbarElement.style.display = 'none' // Hide toolbar if no text is selected
     }
   }
 }

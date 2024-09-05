@@ -1,3 +1,10 @@
+## [1.1.5](https://github.com/hamzamongam/editable-element/compare/v1.1.4...v1.1.5) (2024-09-05)
+
+
+### Bug Fixes
+
+* Selection Issue Fixed ([a62a49d](https://github.com/hamzamongam/editable-element/commit/a62a49d334fba64e2e0804e8dd8999243cc4de33))
+
 ## [1.1.4](https://github.com/hamzamongam/editable-element/compare/v1.1.3...v1.1.4) (2024-09-03)
 
 

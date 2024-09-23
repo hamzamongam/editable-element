@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/hamzamongam/editable-element/compare/v1.1.5...v1.2.0) (2024-09-23)
+
+
+### Features
+
+* Close button added in toolbar Header ([d704028](https://github.com/hamzamongam/editable-element/commit/d704028d50ef587c2d80aa6911eee775fb90ea64))
+
 ## [1.1.5](https://github.com/hamzamongam/editable-element/compare/v1.1.4...v1.1.5) (2024-09-05)
 
 

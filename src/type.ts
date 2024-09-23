@@ -5,8 +5,9 @@ export interface IToolbarConfig {
 export interface IButtonConfig {
   preFixIcon?: string
   className: string
-  label: string
+  label?: string
   icon?: string
+  title?: string
   onClick: () => void
 }
 

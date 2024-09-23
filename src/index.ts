@@ -8,6 +8,7 @@ type EditableElementOption = {
   onClickPublish?: (val?: any) => void
   onClickPreview?: (val?: any) => void
   onClickBack?: () => void
+  onClickClose?: () => void
 }
 
 export class EditableElement {
@@ -33,6 +34,9 @@ export class EditableElement {
       },
       onClickBack: () => {
         options.onClickBack?.()
+      },
+      onClickClose: () => {
+        options.onClickClose?.()
       },
     })
     this.toolbar = new Toolbar()

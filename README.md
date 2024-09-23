@@ -46,6 +46,7 @@ Include the JavaScript file and initialize the EditableElement:
     onClickPublish:(values)=>console.log(values),
     onClickPreview:(values)=>console.log(values),
     onClickBack:()=>console.log('Clicked Back'),
+    onClickClose:(e)=>console.log("Closed")
    })
  </script>
 ```

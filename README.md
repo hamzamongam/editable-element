@@ -69,21 +69,25 @@ Image sections get an upload button overlaid on them; the getter returns the pic
 import { EditableElement } from 'editable-element'
 import 'editable-element/dist/umd/style.css'
 
-new EditableElement({
+const editable = new EditableElement({
   onClickSave: (values) => {
     // values is Record<string, string | File>, keyed by each data-editable value
     console.log(values)
   },
+  onChange: (values) => console.log('dirty:', values),
 })
+
+// later, e.g. on route change in a single-page app:
+editable.destroy()
 ```
 
-Calling `new EditableElement(options)` immediately mounts the header, toolbar, and scans the page for `[data-editable]` sections — there is currently no `destroy()`/teardown method, so it's intended for a single mount per page load.
+Calling `new EditableElement(options)` immediately mounts the header, toolbar, and scans the page for `[data-editable]` sections. Call `.destroy()` on the instance to remove everything it added and stop listening — useful when mounting/unmounting inside an SPA route.
 
 ## API
 
 ### `new EditableElement(options)`
 
-All options are optional callbacks, invoked when the corresponding header button is clicked:
+All options are optional. The `onClick*` options are callbacks invoked when the corresponding header button is clicked:
 
 | Option            | Signature                          | Called with                                                          |
 | ----------------- | ----------------------------------- | --------------------------------------------------------------------- |
@@ -92,6 +96,11 @@ All options are optional callbacks, invoked when the corresponding header button
 | `onClickPublish`  | `(values?: Record<string, string \| File>) => void` | Same as above |
 | `onClickBack`     | `() => void` | Fired by the "edit Metadata" button |
 | `onClickClose`    | `() => void` | Fired by the close button |
+| `onChange`        | `(values: Record<string, string \| File>) => void` | Fired on every text edit (`input` event) and whenever an image file is picked |
+
+### `editableElement.destroy()`
+
+Removes the header, toolbar, and all section modifications (contenteditable attributes, upload buttons, injected classes/styles) from the DOM, and aborts every event listener the instance attached. Safe to call once; there's no re-initialize — construct a new `EditableElement` instead.
 
 ### Returned values shape
 

@@ -87,3 +87,77 @@ describe('EditableSectionManager.getEditableValue', () => {
     expect(manager.getEditableValue().hero).toBe(file)
   })
 })
+
+describe('EditableSectionManager onChange', () => {
+  beforeEach(resetBody)
+
+  it('fires with the latest values when a text section is edited', () => {
+    document.body.innerHTML = '<div data-editable="title">Hello</div>'
+    const values: unknown[] = []
+    const manager = new EditableSectionManager((v) => values.push(v))
+    manager.initializeEditableSections()
+
+    const section = document.querySelector('[data-editable="title"]')!
+    section.innerHTML = 'Updated'
+    section.dispatchEvent(new Event('input'))
+
+    expect(values).toEqual([{ title: 'Updated' }])
+  })
+
+  it('fires as soon as a file is picked for an image section, without waiting on the preview read', () => {
+    document.body.innerHTML =
+      '<div data-editable="hero" data-editable-type="image"><img /></div>'
+    const values: unknown[] = []
+    const manager = new EditableSectionManager((v) => values.push(v))
+    manager.initializeEditableSections()
+
+    const input = document.querySelector(
+      '.ee-image-wrapper input[type="file"]',
+    ) as HTMLInputElement
+    const file = new File(['content'], 'photo.png', { type: 'image/png' })
+    Object.defineProperty(input, 'files', { value: [file] })
+    input.dispatchEvent(new Event('change'))
+
+    expect(values).toEqual([{ hero: file }])
+  })
+})
+
+describe('EditableSectionManager.destroy', () => {
+  beforeEach(resetBody)
+
+  it('reverts text sections and stops emitting onChange', () => {
+    document.body.innerHTML = '<div data-editable="title">Hello</div>'
+    const onChange = () => {
+      throw new Error('onChange should not fire after destroy')
+    }
+    const manager = new EditableSectionManager(onChange)
+    manager.initializeEditableSections()
+
+    manager.destroy()
+
+    const section = document.querySelector('[data-editable="title"]')!
+    expect(section.hasAttribute('contenteditable')).toBe(false)
+    expect(section.classList.contains('border')).toBe(false)
+    expect(section.hasAttribute('data-listener-attached')).toBe(false)
+
+    section.dispatchEvent(new Event('input'))
+  })
+
+  it('removes the upload wrapper and restores the original position from image sections', () => {
+    document.body.innerHTML =
+      '<div data-editable="hero" data-editable-type="image" style="position: static;"><img /></div>'
+    const section = document.querySelector(
+      '[data-editable="hero"]',
+    ) as HTMLElement
+    const manager = new EditableSectionManager()
+    manager.initializeEditableSections()
+
+    manager.destroy()
+
+    expect(section.querySelector('.ee-image-wrapper')).toBeNull()
+    expect(section.classList.contains('image-upload-container')).toBe(false)
+    // Restored to the section's original inline value (the fixture set
+    // position: static explicitly so happy-dom's getComputedStyle sees it).
+    expect(section.style.position).toBe('static')
+  })
+})

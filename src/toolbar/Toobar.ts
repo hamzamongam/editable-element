@@ -9,6 +9,8 @@ import { TextFormatSelector } from './TextFormatSelector'
 export class Toolbar implements ElementProvider {
   private toolbarElement: HTMLDivElement
 
+  private abortController = new AbortController()
+
   constructor() {
     this.toolbarElement = mergeElements([
       [new FontSelector(), new SizeSelector(), new ColorSelector()],
@@ -23,14 +25,19 @@ export class Toolbar implements ElementProvider {
     return this.toolbarElement
   }
 
+  public destroy(): void {
+    this.abortController.abort()
+    this.toolbarElement.remove()
+  }
+
   private handleMouseUp(): void {
     const editSections: NodeListOf<HTMLElement> =
       document.querySelectorAll('[data-editable]')
 
     editSections.forEach((element) => {
-      // Ensure event listeners are not duplicated
-      element.removeEventListener('mouseup', this.mouseUpHandler)
-      element.addEventListener('mouseup', this.mouseUpHandler.bind(this))
+      element.addEventListener('mouseup', this.mouseUpHandler.bind(this), {
+        signal: this.abortController.signal,
+      })
     })
   }
 

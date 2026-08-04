@@ -19,3 +19,5 @@ export interface OptionType {
   value?: any
   label?: string
 }
+
+export type EditableValues = { [key: string]: string | File }

@@ -2,6 +2,7 @@ import { EditableSectionManager } from './EditableSectionManager'
 import { Header } from './Header'
 import './style.scss'
 import { Toolbar } from './toolbar/Toobar'
+import { EditableValues } from './type'
 
 type EditableElementOption = {
   onClickSave?: (val?: any) => void
@@ -9,6 +10,8 @@ type EditableElementOption = {
   onClickPreview?: (val?: any) => void
   onClickBack?: () => void
   onClickClose?: () => void
+  /** Fired whenever a text section is edited or an image is picked. */
+  onChange?: (values: EditableValues) => void
 }
 
 export class EditableElement {
@@ -40,7 +43,7 @@ export class EditableElement {
       },
     })
     this.toolbar = new Toolbar()
-    this.sectionManager = new EditableSectionManager()
+    this.sectionManager = new EditableSectionManager(options.onChange)
 
     this.initialize()
   }
@@ -49,5 +52,13 @@ export class EditableElement {
     document.body.append(this.header.getElement(), this.toolbar.getElement())
     document.body.classList.add('has-editable-active')
     this.sectionManager.initializeEditableSections()
+  }
+
+  /** Tears down all listeners and DOM nodes this instance added. */
+  public destroy(): void {
+    this.sectionManager.destroy()
+    this.toolbar.destroy()
+    this.header.destroy()
+    document.body.classList.remove('has-editable-active')
   }
 }

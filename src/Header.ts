@@ -107,6 +107,10 @@ export class Header {
     return this.mainHeader
   }
 
+  public destroy(): void {
+    this.mainHeader.remove()
+  }
+
   private handleEditMetaDataClick(): void {
     if (this.onClickBack) {
       this.onClickBack()

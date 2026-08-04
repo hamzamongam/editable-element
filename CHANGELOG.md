@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/hamzamongam/editable-element/compare/v1.2.0...v1.2.1) (2026-08-04)
+
+
+### Bug Fixes
+
+* correct image section positioning, font selector, and font-family option bugs ([5220a05](https://github.com/hamzamongam/editable-element/commit/5220a05434c56a3a026df2d81c7b4eaa1b446f4d))
+
 # [1.2.0](https://github.com/hamzamongam/editable-element/compare/v1.1.5...v1.2.0) (2024-09-23)
 
 

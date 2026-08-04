@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/hamzamongam/editable-element/compare/v1.2.1...v1.3.0) (2026-08-04)
+
+
+### Features
+
+* add onChange callback and destroy() teardown method ([bfc3356](https://github.com/hamzamongam/editable-element/commit/bfc3356623c894b5acc79fa456da2afaa5c67669))
+
 ## [1.2.1](https://github.com/hamzamongam/editable-element/compare/v1.2.0...v1.2.1) (2026-08-04)
 
 

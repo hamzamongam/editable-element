@@ -1,6 +1,6 @@
-# Editable Element 
+# Editable Element
 
-`editable-element` is a lightweight JavaScript plugin that allows you to create and manage editable content within your HTML templates. This plugin enables inline editing of specific elements by using the `data-editable` attribute.
+`editable-element` is a lightweight JavaScript/TypeScript plugin that lets you turn parts of an existing HTML page into inline-editable content, with a floating toolbar for text formatting and image replacement. No framework required — it works directly against the DOM.
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
@@ -8,64 +8,119 @@
 
 ## Features
 
-- **Attribute-Based Editing**: Easily make any HTML element editable by adding `data-editable="title"` or other similar attributes.
-- **HTML Template Editing**: Modify and update content directly within your HTML templates.
-- **Toolbar Integration**: Includes a toolbar with text formatting options (bold, italic, underline, etc.).
-- **Custom Event Handling**: Supports `onClickSave` callbacks for handling content changes.
-- **Preview and Save**: Built-in buttons for previewing and saving the edited content.
-- **Customizable**: Highly customizable to suit various editing needs.
+- **Attribute-based editing** — make any element editable by adding `data-editable="some_key"`.
+- **Inline image replacement** — add `data-editable-type="image"` to swap an `<img>` via a file picker, previewed instantly with no upload required until you call the value getter.
+- **Selection toolbar** — appears on text selection with font family, font size, color, bold/italic/underline, and alignment controls.
+- **Header actions** — Save / Preview / Publish / Close / Edit Metadata buttons with callbacks you provide.
+- **Zero dependencies at runtime** — the whole plugin is bundled into a single UMD/ESM/CJS file plus a stylesheet.
 
 ## Installation
-
-You can install the plugin via npm:
 
 ```bash
 npm install editable-element
 ```
 
-## Current Version
-The current version  is **v${nextRelease.version}**.
+or, without a bundler, load the pre-built UMD build directly from unpkg (see [Quick start](#quick-start)).
 
-### 1.Getting Started
+## Quick start
 
-#### Add CSS file 
-Include the necessary CSS file in your HTML:
+### 1. Add the stylesheet
 
 ```html
- <link rel="stylesheet" href="https://unpkg.com/editable-element/dist/umd/style.css">
+<link rel="stylesheet" href="https://unpkg.com/editable-element/dist/umd/style.css">
 ```
 
-#### Add JS file 
-Include the JavaScript file and initialize the EditableElement:
+### 2. Mark up your content
+
+Text sections become `contenteditable` — the string you pass to `data-editable` is the key the value comes back under:
 
 ```html
- <script src="https://unpkg.com/editable-element/dist/umd/editable-element.min.js"></script>
- <script>
-   new EditableElement.EditableElement({
-    onClickSave:(values)=>console.log(values),
-    onClickPublish:(values)=>console.log(values),
-    onClickPreview:(values)=>console.log(values),
-    onClickBack:()=>console.log('Clicked Back'),
-    onClickClose:(e)=>console.log("Closed")
-   })
- </script>
+<div data-editable="hero_title">Welcome</div>
 ```
 
-### 1.Set up your HTML - Text
-Make any text element editable by using the data-editable attribute:
+Image sections get an upload button overlaid on them; the getter returns the picked `File`, not a URL:
 
 ```html
-<div data-editable="any_name"> </div>
-```
-
-### 1.Set up your HTML - Image
-For image editing, add the data-editable-type='image' attribute:
-
-```html
-<div data-editable="any_name" data-editable-type="image">
-  <img src="image_url" alt="image_alt">
+<div data-editable="hero_image" data-editable-type="image">
+  <img src="/placeholder.png" alt="Hero image">
 </div>
 ```
 
+### 3. Initialize the plugin
 
+**Via script tag:**
 
+```html
+<script src="https://unpkg.com/editable-element/dist/umd/editable-element.min.js"></script>
+<script>
+  new EditableElement.EditableElement({
+    onClickSave: (values) => console.log(values),
+    onClickPublish: (values) => console.log(values),
+    onClickPreview: (values) => console.log(values),
+    onClickBack: () => console.log('Clicked Back'),
+    onClickClose: () => console.log('Closed'),
+  })
+</script>
+```
+
+**Via npm / TypeScript:**
+
+```ts
+import { EditableElement } from 'editable-element'
+import 'editable-element/dist/umd/style.css'
+
+new EditableElement({
+  onClickSave: (values) => {
+    // values is Record<string, string | File>, keyed by each data-editable value
+    console.log(values)
+  },
+})
+```
+
+Calling `new EditableElement(options)` immediately mounts the header, toolbar, and scans the page for `[data-editable]` sections — there is currently no `destroy()`/teardown method, so it's intended for a single mount per page load.
+
+## API
+
+### `new EditableElement(options)`
+
+All options are optional callbacks, invoked when the corresponding header button is clicked:
+
+| Option            | Signature                          | Called with                                                          |
+| ----------------- | ----------------------------------- | --------------------------------------------------------------------- |
+| `onClickSave`     | `(values?: Record<string, string \| File>) => void` | Current value of every `[data-editable]` section |
+| `onClickPreview`  | `(values?: Record<string, string \| File>) => void` | Same as above |
+| `onClickPublish`  | `(values?: Record<string, string \| File>) => void` | Same as above |
+| `onClickBack`     | `() => void` | Fired by the "edit Metadata" button |
+| `onClickClose`    | `() => void` | Fired by the close button |
+
+### Returned values shape
+
+For each `[data-editable="key"]` element on the page:
+- **Text sections** — `values[key]` is the section's current `innerHTML` string.
+- **Image sections** — `values[key]` is the picked `File` object, and the key is **absent** until the user has actually chosen a file (there's no "existing image" fallback value).
+
+## Toolbar behavior
+
+Selecting text inside a `[data-editable]` section shows a floating toolbar above the selection with:
+- Font family and font size selects (wrap the selection in a styled `<span>`)
+- A color picker (wraps the selection in a colored `<span>`)
+- Bold / Italic / Underline buttons (`document.execCommand`)
+- Alignment buttons (`document.execCommand`, applies to the whole editable block, not just the selection)
+
+The toolbar hides again as soon as the selection is cleared or the mouse is released outside an editable section.
+
+## Development
+
+This project uses [Bun](https://bun.sh) as its package manager and test runner.
+
+```bash
+bun install        # install dependencies
+bun run build       # build dist/ (rollup)
+bun run watch        # rebuild on change
+bun run dev          # watch + serve index.html via browser-sync
+bun run lint         # eslint src/
+bun run typecheck    # tsc --noEmit for src/ and test/
+bun test             # run the test suite (bun:test + happy-dom)
+```
+
+Releases are automated via [semantic-release](https://semantic-release.gitbook.io/) from Conventional Commits pushed to `main` — see `.releaserc.json` and `.github/workflows/release.yml`.

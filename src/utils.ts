@@ -42,7 +42,7 @@ export const createSelectElement = ({
   options.forEach((option) => {
     const optionElement = document.createElement('option')
     if (styleProp === 'font-family') {
-      optionElement.style.fontFamily = option as string
+      optionElement.style.fontFamily = `${option.value}`
     }
     optionElement.value = `${option.value}`
     optionElement.textContent = `${option.label}`

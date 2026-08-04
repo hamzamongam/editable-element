@@ -25,7 +25,7 @@ export class EditableSectionManager {
           section.classList.add('image-upload-container')
           const computedStyle = window.getComputedStyle(section)
           if (computedStyle.position === 'static') {
-            section.style.position = 'releative'
+            section.style.position = 'relative'
           }
 
           const fileWrapper = createElement('div', {
@@ -45,7 +45,7 @@ export class EditableSectionManager {
           file.addEventListener('change', (event) => {
             const { files } = event.target as HTMLInputElement
             if (files && files.length > 0) {
-              const file = files?.[0]
+              const selectedFile = files[0]
               const reader = new FileReader()
               reader.onload = () => {
                 const img = section.querySelector('img')
@@ -53,9 +53,9 @@ export class EditableSectionManager {
                   img.src = `${reader.result}`
                 }
               }
-              reader.readAsDataURL(file)
+              reader.readAsDataURL(selectedFile)
               const name = `${section.getAttribute('data-editable')}`
-              this.updateFile(name, file)
+              this.updateFile(name, selectedFile)
             }
           })
 
